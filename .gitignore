@@ -171,3 +171,5 @@ cython_debug/
 .pypirc
 **/__pycache__
 .env
+celerybeat-schedule.db
+dump.rdb

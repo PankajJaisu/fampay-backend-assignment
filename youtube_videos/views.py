@@ -1,47 +1,39 @@
-import asyncio
-from googleapiclient.discovery import build
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 from youtube_videos.models import Video
-from datetime import datetime, timedelta
-from decouple import config
+from rest_framework.pagination import PageNumberPagination
+import asyncio
+from youtube_videos.tasks import fetch_videos
 
-API_KEYS = config('YOUTUBE_API_KEY').split(',')
-current_api_key_index = 0
+class VideoFetchView(APIView):
+    def get(self, request, *args, **kwargs):
 
-def get_youtube_api():
-    global current_api_key_index
-    api_key = API_KEYS[current_api_key_index]
-    return build('youtube', 'v3', developerKey=api_key)
+        asyncio.create_task(fetch_videos())
+        return Response({"message": "Video fetching started"}, status=status.HTTP_200_OK)
 
-async def fetch_videos():
-    global current_api_key_index
-    search_query = "official"
-    next_page_token = None
-    youtube = get_youtube_api()
+class VideoPagination(PageNumberPagination):
+    page_size = 10  # Limited to 10 results per page, we can  change according to our need
 
-    while True:
-        request = youtube.search().list(
-            q=search_query,
-            type='video',
-            order='date',
-            pageToken=next_page_token,
-            part='snippet'
-        )
+class VideoListView(APIView):
+    def get(self, request):
+        videos = Video.objects.all().order_by('-published_at')
 
-        try:
-            response = request.execute()
-        except Exception:
-            current_api_key_index = (current_api_key_index + 1) % len(API_KEYS)
-            youtube = get_youtube_api()
-            continue
+       
+        paginator = VideoPagination()
+        paginated_videos = paginator.paginate_queryset(videos, request)
 
-        for item in response['items']:
-            Video.objects.create(
-                title=item['snippet']['title'],
-                description=item['snippet']['description'],
-                published_at=item['snippet']['publishedAt'],
-                thumbnail_url=item['snippet']['thumbnails']['default']['url'],
-                video_url=f"https://www.youtube.com/watch?v={item['id']['videoId']}"
-            )
+        video_data = [
+            {
+                "title": video.title,
+                "description": video.description,
+                "published_at": video.published_at,
+                "thumbnail_url": video.thumbnail_url,
+                "video_url": video.video_url
+            }
+            for video in paginated_videos
+        ]
 
-        next_page_token = response.get('nextPageToken')
-        await asyncio.sleep(10)  # Fetch videos every 10 seconds
+        return paginator.get_paginated_response(video_data)
+
+
