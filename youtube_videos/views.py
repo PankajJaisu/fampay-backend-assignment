@@ -8,7 +8,7 @@ from youtube_videos.tasks import fetch_videos
 from .serializers import *
 
 class VideoFetchView(APIView):
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
 
         asyncio.create_task(fetch_videos())
         return Response({"message": "Video fetching started"}, status=status.HTTP_200_OK)

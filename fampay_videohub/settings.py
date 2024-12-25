@@ -24,13 +24,18 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'youtube_videos',
     'rest_framework',
+    'corsheaders',
+
 
 
 ]
 
 MIDDLEWARE = [
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -110,7 +115,19 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'DELETE',
+]
 
+CORS_ALLOW_HEADERS = [
+    'content-type',
+    'Authorization',
+]
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'  
 CELERY_ACCEPT_CONTENT = ['json']

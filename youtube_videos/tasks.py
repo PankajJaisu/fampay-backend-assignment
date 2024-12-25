@@ -32,8 +32,8 @@ def get_or_create_video(video_id, item):
 
 
 async def fetch_videos():
-    search_queries = ['cricket', 'football', 'official', 'basketball', 'music', 'technology', 'gaming']
-    search_query = random.choice(search_queries)
+    # Getting search query from environment variable
+    search_query = config('YOUTUBE_SEARCH_QUERY', default='cricket')  # Using 'cricket' if not defined
 
     api_url = 'https://www.googleapis.com/youtube/v3/search'
 
@@ -73,7 +73,6 @@ async def fetch_videos():
             else:
                 print(f"Error occurred: {response.status}")
                 break
-
 
 
 @shared_task(name="youtube_videos.tasks.fetch_videos_task")
