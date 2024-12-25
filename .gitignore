@@ -170,6 +170,5 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 **/__pycache__
-.env
 celerybeat-schedule.db
 dump.rdb

@@ -43,9 +43,18 @@ The **YouTube Video Fetcher** is a Django-based application that continuously fe
 ### 4. Configure Environment Variables
 Create a .env file in the project root and add the following variables:
 ```bash
-YOUTUBE_SEARCH_QUERY=your_search_query
-YOUTUBE_API_KEYS=api_key1,api_key2,api_key3
+YOUTUBE_SEARCH_QUERY=investment
+YOUTUBE_API_KEYS='AIzaSyBi-rIY_MUSkORfgGKWROlQOwDt8Su_2HM',
+DB_NAME=neondb
+DB_USER=neondb_owner
+DB_PASSWORD=4yFXHqrQRl8v
+DB_HOST=ep-still-bird-a5fodpot.us-east-2.aws.neon.tech
+DB_PORT=5432
+
+
 ```
+
+note Added DB credentials directly in .env for assignment purposes to simplify setup and testing. Note: This is not recommended for real-world projects; sensitive data should always be managed securely
 ## Install Redis 
 
 ### 5. Install Redis (for Celery)
