@@ -9,7 +9,7 @@ SECRET_KEY = 'django-insecure-1-is)=&-pt_1%n33&gn06!pb998tolv+49_t$b5!6s@s_kb7n^
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_celery_beat',
     'youtube_videos',
+    'rest_framework',
 
 
 ]

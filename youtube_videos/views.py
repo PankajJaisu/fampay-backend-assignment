@@ -5,6 +5,7 @@ from youtube_videos.models import Video
 from rest_framework.pagination import PageNumberPagination
 import asyncio
 from youtube_videos.tasks import fetch_videos
+from .serializers import *
 
 class VideoFetchView(APIView):
     def get(self, request, *args, **kwargs):
@@ -17,23 +18,18 @@ class VideoPagination(PageNumberPagination):
 
 class VideoListView(APIView):
     def get(self, request):
-        videos = Video.objects.all().order_by('-published_at')
+      
+        search_query = request.GET.get('search', None)
 
-       
+        if search_query:
+            videos = Video.objects.filter(title__icontains=search_query).order_by('-published_at')
+            print("videos:",videos)
+        else:
+            videos = Video.objects.all().order_by('-published_at')
+
         paginator = VideoPagination()
         paginated_videos = paginator.paginate_queryset(videos, request)
 
-        video_data = [
-            {
-                "title": video.title,
-                "description": video.description,
-                "published_at": video.published_at,
-                "thumbnail_url": video.thumbnail_url,
-                "video_url": video.video_url
-            }
-            for video in paginated_videos
-        ]
+        serializer = VideoSerializer(paginated_videos, many=True)
 
-        return paginator.get_paginated_response(video_data)
-
-
+        return paginator.get_paginated_response(serializer.data)

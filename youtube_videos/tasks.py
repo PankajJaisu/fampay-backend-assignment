@@ -1,12 +1,22 @@
 # tasks.py
+from itertools import cycle
+
 
 from celery import shared_task
 import aiohttp
 import asyncio
 from .models import Video
 from decouple import config
+import random
+from asgiref.sync import sync_to_async
 
-from asgiref.sync import async_to_sync, sync_to_async
+# Fetching API keys from environment variables
+api_keys = config('YOUTUBE_API_KEY').split(',')
+api_key_cycle = cycle(api_keys)
+
+def get_next_api_key():
+    return next(api_key_cycle)
+
 
 @sync_to_async
 def get_or_create_video(video_id, item):
@@ -22,22 +32,48 @@ def get_or_create_video(video_id, item):
 
 
 async def fetch_videos():
-    api_url = 'https://www.googleapis.com/youtube/v3/search'
-    params = {
-        'part': 'snippet',
-        'q': 'search',  # Example search query
-        'order': 'date',
-        'type': 'video',
-        'key': 'AIzaSyBCoB7-XLvG4d2v4eZYEw2Blh3tKcgnGy8'
-    }
+    search_queries = ['cricket', 'football', 'official', 'basketball', 'music', 'technology', 'gaming']
+    search_query = random.choice(search_queries)
 
-    async with aiohttp.ClientSession() as session:
-        response = await session.get(api_url, params=params)
-        data = await response.json()
-        print("data::", data)
-        for item in data['items']:
-            video_id = item['id']['videoId']
-            await get_or_create_video(video_id, item)
+    api_url = 'https://www.googleapis.com/youtube/v3/search'
+
+    api_key = get_next_api_key()
+
+    if not api_key:
+        print("All API keys exhausted. Stopping task.")
+        return
+
+    while True:
+        params = {
+            'part': 'snippet',
+            'q': search_query,
+            'order': 'date',
+            'type': 'video',
+            'key': api_key
+        }
+
+        async with aiohttp.ClientSession() as session:
+            response = await session.get(api_url, params=params)
+
+            if response.status == 200:
+                data = await response.json()
+                for item in data['items']:
+                    video_id = item['id']['videoId']
+                    await get_or_create_video(video_id, item)
+                break
+
+            elif response.status == 403:
+                print(f"API key {api_key} exhausted, trying the next one.")
+                api_key = get_next_api_key()
+                if not api_key:
+                    print("All API keys exhausted. Stopping task.")
+                    break
+                continue
+
+            else:
+                print(f"Error occurred: {response.status}")
+                break
+
 
 
 @shared_task(name="youtube_videos.tasks.fetch_videos_task")
