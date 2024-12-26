@@ -44,7 +44,7 @@ The **YouTube Video Fetcher** is a Django-based application that continuously fe
 Create a .env file in the project root and add the following variables:
 ```bash
 YOUTUBE_SEARCH_QUERY=investment
-YOUTUBE_API_KEYS='AIzaSyBi-rIY_MUSkORfgGKWROlQOwDt8Su_2HM',
+YOUTUBE_API_KEY="AIzaSyCCTgz1Hr8RhKkwWAlTrc_1gcIYyk80ef8,AIzaSyDgIh42C1Ilg67XpfFDfkK-OqolsSoZd2Q,AIzaSyC4yWPfNNA7aqYUOeiDhMFa60QpCTL8j44"
 DB_NAME=neondb
 DB_USER=neondb_owner
 DB_PASSWORD=4yFXHqrQRl8v
@@ -54,7 +54,7 @@ DB_PORT=5432
 
 ```
 
-Note:Added DB credentials directly in .env for assignment purposes to simplify setup and testing. Note: This is not recommended for real-world projects; sensitive data should always be managed securely
+Note:Added credentials directly in .env for assignment purposes to simplify setup and testing. Note: This is not recommended for real-world projects; sensitive data should always be managed securely
 ## Install Redis 
 
 ### 5. Install Redis (for Celery)
@@ -141,6 +141,15 @@ GET http://127.0.0.1:8000/api/youtube/videos/
 ```bash
 GET http://127.0.0.1:8000/api/youtube/videos/?search=cricket&page=1
 ```
+
+Deployed Backend API Request 
+ 
+```bash
+GET https://fampay-backend-assignment-3iyr.onrender.com/api/youtube/videos/
+```
+
+
+
 
 
 

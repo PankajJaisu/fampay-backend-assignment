@@ -1,4 +1,3 @@
-# tasks.py
 from itertools import cycle
 
 
@@ -12,6 +11,7 @@ from asgiref.sync import sync_to_async
 
 # Fetching API keys from environment variables
 api_keys = config('YOUTUBE_API_KEY').split(',')
+print("api_key",api_keys)
 api_key_cycle = cycle(api_keys)
 
 def get_next_api_key():
