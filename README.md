@@ -54,7 +54,7 @@ DB_PORT=5432
 
 ```
 
-note Added DB credentials directly in .env for assignment purposes to simplify setup and testing. Note: This is not recommended for real-world projects; sensitive data should always be managed securely
+Note:Added DB credentials directly in .env for assignment purposes to simplify setup and testing. Note: This is not recommended for real-world projects; sensitive data should always be managed securely
 ## Install Redis 
 
 ### 5. Install Redis (for Celery)
@@ -107,7 +107,12 @@ celery -A youtube_videos beat --loglevel=info
 ## Demo Link (for Viewing the Dashboard)
 To view the React-based dashboard, which displays the stored YouTube videos, visit the following link:
 
-**Demo Link:** [Click here](http://your-demo-link.com)
+**Demo Link:** [Click here](https://fampay-video-dashboard.netlify.app)
+
+### Frontend Repository
+You can find the source code for the React-based dashboard in the following GitHub repository:
+#### Repository Link: [Frontend Dashboard Repo](https://github.com/PankajJaisu/fampay-video-dashboard)
+
 
 This dashboard allows you to:
 
